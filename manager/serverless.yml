@@ -21,6 +21,11 @@ provider:
         - dynamodb:DescribeTable
       Resource:
         - !GetAtt TLADynamoDBTable.Arn
+    - Effect: Allow
+      Action:
+        - events:PutEvents
+      Resource:
+        - "arn:aws:events:*"
 
 package:
   artifact: bin/release/net8.0/deploy-package.zip

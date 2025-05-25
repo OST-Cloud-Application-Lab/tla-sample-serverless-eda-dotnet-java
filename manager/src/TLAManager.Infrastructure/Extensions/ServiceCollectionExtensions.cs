@@ -1,3 +1,4 @@
+using Amazon.EventBridge;
 using Microsoft.Extensions.DependencyInjection;
 using TLAManager.Domain;
 using TLAManager.Infrastructure.Persistence;
@@ -12,6 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ITLAGroupRepository, TLAGroupRepository>();
         services.AddTransient<DynamoDbThreeLetterAbbreviationRepository>();
         services.AddTransient<ResponseFactory>();
+        services.AddTransient<AmazonEventBridgeClient>();
         return services;
     }
 }

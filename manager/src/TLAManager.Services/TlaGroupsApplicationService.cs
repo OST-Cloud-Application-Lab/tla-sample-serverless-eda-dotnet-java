@@ -55,11 +55,11 @@ public class TlaGroupsApplicationService(ITLAGroupRepository repository) : ITlaG
         return await repository.SaveAsync(group);
     }
 
-    public async Task AcceptTlaAsync(string groupName, string tlaName)
+    public async Task<TLAGroup> AcceptTlaAsync(string groupName, string tlaName)
     {
         var group = await GetGroupByNameAsync(groupName);
         group.AcceptTLA(new ShortName(tlaName));
-        await repository.SaveAsync(group);
+        return await repository.SaveAsync(group);
     }
 
     private async Task<TLAGroup> GetGroupByNameAsync(string name)

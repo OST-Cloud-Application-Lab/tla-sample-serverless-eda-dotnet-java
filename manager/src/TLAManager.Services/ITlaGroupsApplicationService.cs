@@ -10,5 +10,5 @@ public interface ITlaGroupsApplicationService
     Task<TLAGroup> FindGroupByNameAsync(string name);
     Task<TLAGroup> AddTlaGroupAsync(TLAGroup tlaGroup);
     Task<TLAGroup> AddTlaAsync(string groupName, ThreeLetterAbbreviation tla);
-    Task AcceptTlaAsync(string groupName, string tlaName);
+    Task<TLAGroup> AcceptTlaAsync(string groupName, string tlaName);
 }

@@ -1,8 +1,14 @@
 using System.Net;
+using System.Text.Json;
+using Amazon.EventBridge;
+using Amazon.EventBridge.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
+using Amazon.Runtime.Internal.Util;
 using Microsoft.Extensions.DependencyInjection;
+using TLAManager.Domain;
 using TLAManager.Domain.Exceptions;
+using TLAManager.Infrastructure.WebApi.Events;
 using TLAManager.Services;
 using TLAManager.Services.Exceptions;
 
@@ -20,12 +26,15 @@ public class AcceptTlaFunction : FunctionBase
         using var scope = ServiceProvider.CreateScope();
         var service = scope.ServiceProvider.GetService<ITlaGroupsApplicationService>()!;
         var responseFactory = scope.ServiceProvider.GetService<ResponseFactory>()!;
+        var eventBridgeClient = scope.ServiceProvider.GetService<AmazonEventBridgeClient>()!;
 
         try
         {
             var groupName = request.PathParameters[GroupNameParam];
             var tlaName = request.PathParameters[TlaNameParam];
-            await service.AcceptTlaAsync(groupName, tlaName);
+            var acceptedGroup = await service.AcceptTlaAsync(groupName, tlaName);
+            await SendAcceptEventAsync(eventBridgeClient, acceptedGroup, tlaName, context);
+
             return responseFactory.CreateEmptyResponse(HttpStatusCode.OK);
         }
         catch (TLAGroupNameDoesNotExistException e)
@@ -52,5 +61,39 @@ public class AcceptTlaFunction : FunctionBase
                 Body = $"Internal error has happened: {e.Message}"
             };
         }
+    }
+
+    private static async Task SendAcceptEventAsync(AmazonEventBridgeClient eventBridgeClient, TLAGroup acceptedGroup, string acceptedTlaName, ILambdaContext context)
+    {
+        var acceptedTla = acceptedGroup.Tlas.First(tla => tla.Name.Name == acceptedTlaName);
+        var eventDetail = new EventDto<TLAAcceptEventDto>
+        {
+            UtcTimestamp = DateTime.UtcNow.ToString("O"),
+            EventType = EventType.AcceptTla.ToString(),
+            EventData = new TLAAcceptEventDto
+            {
+                TlaGroupName = acceptedGroup.Name.Name,
+                TlaName = acceptedTla.Name.Name,
+                TlaMeaning = acceptedTla.Meaning,
+                TlaAlternativeMeanings = acceptedTla.AlternativeMeanings.ToList(),
+                TlaLink = acceptedTla.GetAbsoluteUri()
+            }
+        };
+        var eventBridgeRequest = new PutEventsRequest
+        {
+            Entries =
+            [
+                new()
+                {
+                    Time = DateTime.UtcNow,
+                    EventBusName = EventBusConsts.EventBusDestination,
+                    Source = EventBusConsts.TLAManagerSource,
+                    DetailType = DetailType.StateChangeNotification.ToString(),
+                    Detail = JsonSerializer.Serialize(eventDetail, JsonOptions.SerializerOptions)
+                }
+            ]
+        };
+        var response = await eventBridgeClient.PutEventsAsync(eventBridgeRequest);
+        context.Logger.LogInformation("Response Details. StatusCode {statusCode}, Failed Entries: {failedEntryCount}", response.HttpStatusCode, response.FailedEntryCount);
     }
 }

@@ -1,5 +1,4 @@
 using System.Net;
-using System.Text.Json;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +26,7 @@ public class GetAllTlaGroupsFunction : FunctionBase
             var queryParameters = request.QueryStringParameters;
             if (queryParameters != null && queryParameters.TryGetValue(StatusParam, out var statusString))
             {
-                status = Enum.Parse<TLAStatus>(statusString);
+                status = Enum.Parse<TLAStatus>(statusString, true);
             }
 
             var allGroups = await service.FindAllTlaGroupsAsync(status);

@@ -1,0 +1,53 @@
+stages:
+  - build
+  - deploy
+
+.resolver:
+  before_script:
+    - cd resolver
+
+build-resolver:
+  extends: .resolver
+  stage: build
+  image: openjdk:17-alpine
+  script:
+    - echo "Building application..."
+    - ./mvnw clean package
+    - echo "Application successfully built."
+  artifacts:
+    paths:
+      - resolver/target/tla-resolver-serverless-${PROJECT_VERSION}-aws.jar
+
+deploy-resolver:
+  extends: .resolver
+  stage: deploy
+  image: $SLS_IMAGE
+  environment: dev
+  variables:
+    SERVERLESS_ACCESS_KEY: $SERVERLESS_ACCESS_KEY
+  only:
+    refs:
+      - main
+  script:
+    - echo "Deploying application..."
+    - sls deploy
+    - sls invoke --function seed_database --data 'unused'
+    - echo "Application successfully deployed."
+  dependencies: [build-resolver]
+
+undeploy-resolver:
+  extends: .resolver
+  stage: deploy
+  image: $SLS_IMAGE
+  environment: dev
+  variables:
+    SERVERLESS_ACCESS_KEY: $SERVERLESS_ACCESS_KEY
+  when: manual
+  only:
+    refs:
+      - main
+  script:
+    - echo "Undeploying application..."
+    - sls remove
+    - echo "Application successfully undeployed."
+  dependencies: [build-resolver]

@@ -1,13 +1,13 @@
-org: ostcldsol
-app: tla-sample-serverless
-service: tla-sample-serverless
+org: cldsolgrp09
+app: tla-resolver-serverless
+service: tla-resolver-serverless
 provider:
   name: aws
   region: us-east-1
   runtime: java17
   timeout: 10
   environment:
-    TLA_TABLE_NAME: tla-table-dev
+    TLA_TABLE_NAME: tla-resolver-table-dev
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -22,7 +22,7 @@ provider:
         - !GetAtt TLADynamoDBTable.Arn
 
 package:
-  artifact: target/tla-sample-serverless-1.2-SNAPSHOT-aws.jar
+  artifact: target/tla-resolver-serverless-1.2-SNAPSHOT-aws.jar
 
 resources:
   Resources:

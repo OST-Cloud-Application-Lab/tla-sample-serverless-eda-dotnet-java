@@ -1,0 +1,58 @@
+stages:
+  - build
+  - deploy
+
+.manager:
+  before_script:
+    - cd manager
+
+build-manager:
+  extends: .manager
+  stage: build
+  image: ubuntu:latest
+  script:
+    - echo "Installing dependencies..."
+    - apt-get update && apt-get install -y zip curl libicu-dev
+    - curl -sSL https://dot.net/v1/dotnet-install.sh | bash -s -- --version 8.0.408 --install-dir /usr/bin/dotnet
+    - export PATH=$PATH:/usr/bin/dotnet
+
+    - echo "Building application..."
+    - ./.build.sh
+    - echo "Application successfully built."
+  artifacts:
+    paths:
+      - manager/bin/release/net8.0/deploy-package.zip
+
+deploy-manager:
+  extends: .manager
+  stage: deploy
+  image: $SLS_IMAGE
+  environment: dev
+  variables:
+    SERVERLESS_ACCESS_KEY: $SERVERLESS_ACCESS_KEY
+  only:
+    refs:
+      - main
+  script:
+    - echo "Deploying application..."
+    - sls deploy
+    - sls invoke --function seed_database --data 'unused'
+    - echo "Application successfully deployed."
+  dependencies: [build-manager]
+
+undeploy-manager:
+  extends: .manager
+  stage: deploy
+  image: $SLS_IMAGE
+  environment: dev
+  variables:
+    SERVERLESS_ACCESS_KEY: $SERVERLESS_ACCESS_KEY
+  when: manual
+  only:
+    refs:
+      - main
+  script:
+    - echo "Undeploying application..."
+    - sls remove
+    - echo "Application successfully undeployed."
+  dependencies: [build-manager]

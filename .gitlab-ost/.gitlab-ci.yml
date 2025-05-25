@@ -3,46 +3,21 @@ variables:
   SLS_IMAGE: registry.gitlab.ost.ch:45023/stefan.kapferer/serverless-framework-docker-image/sls:v1.0
 
 stages:
+  - pre
   - build
   - deploy
 
-maven-build:
-  stage: build
-  image: openjdk:17-alpine
+top-level-job:
+  stage: pre
   script:
-    - echo "Building application..."
-    - ./mvnw clean package
-    - echo "Application successfully built."
-  artifacts:
-    paths:
-      - target/tla-sample-serverless-${PROJECT_VERSION}-aws.jar
+    - echo "Build will start soon..." # Workflows need to contain at least one top level job
 
-deploy:
-  stage: deploy
-  image: $SLS_IMAGE
-  environment: dev
-  variables:
-    SERVERLESS_ACCESS_KEY: $SERVERLESS_ACCESS_KEY
-  only:
-    refs:
-      - main
-  script:
-    - echo "Deploying application..."
-    - sls deploy
-    - sls invoke --function seed_database --data 'unused'
-    - echo "Application successfully deployed."
-
-undeploy:
-  stage: deploy
-  image: $SLS_IMAGE
-  environment: dev
-  variables:
-    SERVERLESS_ACCESS_KEY: $SERVERLESS_ACCESS_KEY
-  when: manual
-  only:
-    refs:
-      - main
-  script:
-    - echo "Undeploying application..."
-    - sls remove
-    - echo "Application successfully undeployed."
+include:
+  - local: 'manager/manager.gitlab-ci.yml'
+    rules:
+      - changes:
+        - 'manager/**'
+  - local: 'resolver/resolver.gitlab-ci.yml'
+    rules:
+      - changes:
+        - 'resolver/**'

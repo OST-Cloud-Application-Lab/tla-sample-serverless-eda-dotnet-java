@@ -28,7 +28,7 @@ Building the app and its JAR file is done with Maven:
 ./mvnw clean package
 ```
 
-The command above creates a JAR file `target\tla-sample-serverless-1.2-SNAPSHOT-aws.jar` which contains all the functions (lambdas) of the app. Once successfully built, the app is easily deployed with:
+The command above creates a JAR file `target\tla-resolver-serverless-1.2-SNAPSHOT-aws.jar` which contains all the functions (lambdas) of the app. Once successfully built, the app is easily deployed with:
 
 ```bash
 serverless deploy

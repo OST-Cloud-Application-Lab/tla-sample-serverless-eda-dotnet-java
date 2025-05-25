@@ -1,3 +1,5 @@
+/**/.idea
+
 target/
 src-gen/
 !.mvn/wrapper/maven-wrapper.jar
@@ -38,3 +40,9 @@ build/
 ### Serverless Framework ###
 .serverless
 
+### DotnetCore ###
+# .NET Core build folders
+bin/
+obj/
+/**/*.DotSettings*
+/**/*.DotSettings

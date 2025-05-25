@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.contextmapper</groupId>
-    <artifactId>tla-sample-serverless</artifactId>
+    <artifactId>tla-resolver-serverless</artifactId>
     <version>1.2-SNAPSHOT</version>
     <parent>
         <groupId>org.springframework.boot</groupId>

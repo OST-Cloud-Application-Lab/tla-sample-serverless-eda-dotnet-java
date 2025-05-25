@@ -66,18 +66,13 @@ public class AcceptTlaFunction : FunctionBase
     private static async Task SendAcceptEventAsync(AmazonEventBridgeClient eventBridgeClient, TLAGroup acceptedGroup, string acceptedTlaName, ILambdaContext context)
     {
         var acceptedTla = acceptedGroup.Tlas.First(tla => tla.Name.Name == acceptedTlaName);
-        var eventDetail = new EventDto<TLAAcceptEventDto>
+        var acceptEventDto = new TLAAcceptEventDto
         {
-            UtcTimestamp = DateTime.UtcNow.ToString("O"),
-            EventType = EventType.AcceptTla.ToString(),
-            EventData = new TLAAcceptEventDto
-            {
-                TlaGroupName = acceptedGroup.Name.Name,
-                TlaName = acceptedTla.Name.Name,
-                TlaMeaning = acceptedTla.Meaning,
-                TlaAlternativeMeanings = acceptedTla.AlternativeMeanings.ToList(),
-                TlaLink = acceptedTla.GetAbsoluteUri()
-            }
+            TlaGroupName = acceptedGroup.Name.Name,
+            TlaName = acceptedTla.Name.Name,
+            TlaMeaning = acceptedTla.Meaning,
+            TlaAlternativeMeanings = acceptedTla.AlternativeMeanings.ToList(),
+            TlaLink = acceptedTla.GetAbsoluteUri()
         };
         var eventBridgeRequest = new PutEventsRequest
         {
@@ -88,8 +83,8 @@ public class AcceptTlaFunction : FunctionBase
                     Time = DateTime.UtcNow,
                     EventBusName = EventBusConsts.EventBusDestination,
                     Source = EventBusConsts.TLAManagerSource,
-                    DetailType = DetailType.StateChangeNotification.ToString(),
-                    Detail = JsonSerializer.Serialize(eventDetail, JsonOptions.SerializerOptions)
+                    DetailType = EventType.AcceptTla.ToString(),
+                    Detail = JsonSerializer.Serialize(acceptEventDto, JsonOptions.SerializerOptions)
                 }
             ]
         };

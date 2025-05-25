@@ -12,3 +12,8 @@ resources:
       Type: AWS::Events::EventBus
       Properties:
         Name: TLAEventBus
+  Outputs:
+      TLAEventBusName:
+        Value: !GetAtt TLAEventBus.Name
+        Export:
+          Name: TLAEventBusName

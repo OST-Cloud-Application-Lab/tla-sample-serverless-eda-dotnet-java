@@ -37,6 +37,30 @@ resources:
           - AttributeName: "name"
             KeyType: "HASH"
         TableName: ${self:provider.environment.TLA_TABLE_NAME}
+    AcceptTLARule:
+      Type: AWS::Events::Rule
+      Properties:
+        EventBusName: !ImportValue TLAEventBusName
+        EventPattern:
+          source:
+            - "TLAManager"
+          detail-type:
+            - "AcceptTla"
+        Name: accept-tla-rule-1
+        Targets:
+          - Arn: !GetAtt 
+              - AcceptTlaLambdaFunction
+              - Arn
+            Id: accept_tla
+    PermissionInvokeLambda: 
+      Type: AWS::Lambda::Permission
+      Properties: 
+          FunctionName: !Ref "AcceptTlaLambdaFunction"
+          Action: "lambda:InvokeFunction"
+          Principal: "events.amazonaws.com"
+          SourceArn: !GetAtt
+                  - "AcceptTLARule"
+                  - "Arn"
 
 functions:
   read_all_tla_groups:
@@ -79,14 +103,11 @@ functions:
       - httpApi:
           path: /tlas/{groupName}
           method: post
-  accept_tla:
+  acceptTla:
     handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
     environment:
       SPRING_CLOUD_FUNCTION_DEFINITION: acceptTLAHandler
-    events:
-      - httpApi:
-          path: /tlas/{groupName}/{name}/accept
-          method: put
+          
   seed_database:
     handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
     environment:

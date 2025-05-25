@@ -21,3 +21,7 @@ include:
     rules:
       - changes:
         - 'resolver/**'
+  - local: 'eventbridge/eventbridge.gitlab-ci.yml'
+    rules:
+      - changes:
+        - 'eventbridge/**'

@@ -1,0 +1,39 @@
+stages:
+  - deploy
+
+.eventbridge:
+  before_script:
+    - cd eventbridge
+
+deploy-eventbridge:
+  extends: .eventbridge
+  stage: deploy
+  image: $SLS_IMAGE
+  environment: dev
+  variables:
+    SERVERLESS_ACCESS_KEY: $SERVERLESS_ACCESS_KEY
+  only:
+    refs:
+      - main
+  script:
+    - echo "Deploying application..."
+    - sls deploy
+    - echo "Application successfully deployed."
+  dependencies: []
+
+undeploy-eventbridge:
+  extends: .eventbridge
+  stage: deploy
+  image: $SLS_IMAGE
+  environment: dev
+  variables:
+    SERVERLESS_ACCESS_KEY: $SERVERLESS_ACCESS_KEY
+  when: manual
+  only:
+    refs:
+      - main
+  script:
+    - echo "Undeploying application..."
+    - sls remove
+    - echo "Application successfully undeployed."
+  dependencies: []

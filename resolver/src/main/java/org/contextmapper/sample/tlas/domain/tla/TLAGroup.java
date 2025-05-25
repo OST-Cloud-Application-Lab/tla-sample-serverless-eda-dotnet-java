@@ -48,14 +48,6 @@ public class TLAGroup {
         return Collections.unmodifiableSet(this.tlas);
     }
 
-    public void acceptTLA(final ShortName shortName) {
-        var tla = this.tlas.stream()
-                .filter(t -> t.getName().equals(shortName))
-                .findFirst()
-                .orElseThrow(() -> new TLANameDoesNotExist(shortName.toString()));
-        tla.accept();
-    }
-
     public static class TLAGroupBuilder {
         private final ShortName name;
         private String description;

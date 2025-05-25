@@ -2,7 +2,6 @@ package org.contextmapper.sample.tlas.infrastructure.persistence.internal_repos;
 
 import com.google.common.collect.Lists;
 import org.contextmapper.sample.tlas.domain.tla.TLAGroup;
-import org.contextmapper.sample.tlas.domain.tla.TLAStatus;
 import org.contextmapper.sample.tlas.domain.tla.ThreeLetterAbbreviation;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
@@ -20,7 +19,6 @@ public class TLAGroupMapper {
     private static final String MEANING = "meaning";
     private static final String ALTERNATIVE_MEANINGS = "alternative_meanings";
     private static final String URL = "url";
-    private static final String STATUS = "status";
 
     private TLAGroupMapper() {
         // hide constructor
@@ -33,8 +31,7 @@ public class TLAGroupMapper {
         for (AttributeValue av : items.get(TLAS).l()) {
             Map<String, AttributeValue> tlaMap = av.m();
             var tlaBuilder = new ThreeLetterAbbreviation.TLABuilder(tlaMap.get(NAME).s())
-                    .withMeaning(tlaMap.get(MEANING).s())
-                    .withStatus(TLAStatus.valueOf(tlaMap.get(STATUS).s()));
+                    .withMeaning(tlaMap.get(MEANING).s());
             if (tlaMap.containsKey(ALTERNATIVE_MEANINGS)) {
                 tlaBuilder.withAlternativeMeanings(tlaMap.get(ALTERNATIVE_MEANINGS).l().stream()
                         .map(AttributeValue::s)
@@ -67,7 +64,6 @@ public class TLAGroupMapper {
             if (tla.getLink() != null && !"".equals(tla.getLink())) {
                 tlaMap.put(URL, builder().s(tla.getLink()).build());
             }
-            tlaMap.put(STATUS, builder().s(tla.getStatus().toString()).build());
             tlaList.add(tlaMap);
         }
         map.put(TLAS, builder().l(

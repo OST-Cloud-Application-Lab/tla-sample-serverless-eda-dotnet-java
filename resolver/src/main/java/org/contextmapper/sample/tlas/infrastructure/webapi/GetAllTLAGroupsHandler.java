@@ -6,21 +6,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.contextmapper.sample.tlas.application.TlaGroupsApplicationService;
-import org.contextmapper.sample.tlas.domain.tla.TLAStatus;
 import org.contextmapper.sample.tlas.infrastructure.webapi.mapper.TlaApiDTOMapper;
 import org.springframework.stereotype.Component;
-import software.amazon.awssdk.http.HttpStatusCode;
+import software.amazon.awssdk.http.HttpStatusCode; 
 
 import java.util.function.Function;
-
-import static org.contextmapper.sample.tlas.domain.tla.TLAStatus.ACCEPTED;
 
 @Component
 public class GetAllTLAGroupsHandler implements Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     private static final Log logger = LogFactory.getLog(GetAllTLAGroupsHandler.class);
-
-    private static final String STATUS_PARAM = "status";
 
     private final TlaGroupsApplicationService service;
     private final ObjectMapper objectMapper;
@@ -39,11 +34,7 @@ public class GetAllTLAGroupsHandler implements Function<APIGatewayProxyRequestEv
         logger.info(GetAllTLAGroupsHandler.class.getName() + " called");
         try {
             var queryParameters = requestEvent.getQueryStringParameters();
-            var status = ACCEPTED;
-            if (queryParameters != null && queryParameters.containsKey(STATUS_PARAM)) {
-                status = TLAStatus.valueOf(queryParameters.get(STATUS_PARAM));
-            }
-            var tlaGroups = service.findAllTLAGroups(status).stream()
+            var tlaGroups = service.findAllTLAGroups().stream()
                     .map(TlaApiDTOMapper::tlaGroupToDto)
                     .toList();
             logger.info(GetAllTLAGroupsHandler.class.getName() + " returning " + tlaGroups.size() + " TLA groups");

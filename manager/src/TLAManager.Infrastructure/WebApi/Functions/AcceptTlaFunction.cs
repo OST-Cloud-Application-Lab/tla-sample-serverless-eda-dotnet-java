@@ -69,6 +69,7 @@ public class AcceptTlaFunction : FunctionBase
         var acceptEventDto = new TLAAcceptEventDto
         {
             TlaGroupName = acceptedGroup.Name.Name,
+            TlaGroupDescription = acceptedGroup.Description,
             TlaName = acceptedTla.Name.Name,
             TlaMeaning = acceptedTla.Meaning,
             TlaAlternativeMeanings = acceptedTla.AlternativeMeanings.ToList(),

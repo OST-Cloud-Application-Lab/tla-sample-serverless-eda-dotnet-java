@@ -63,7 +63,7 @@ resources:
                   - "Arn"
 
 functions:
-  read_all_tla_groups:
+  readAllTlaGroups:
     handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
     environment:
       SPRING_CLOUD_FUNCTION_DEFINITION: getAllTLAGroupsHandler
@@ -71,7 +71,7 @@ functions:
       - httpApi:
           path: /tlas
           method: get
-  read_all_tlas:
+  readAllTlas:
     handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
     environment:
       SPRING_CLOUD_FUNCTION_DEFINITION: getAllTLAsHandler
@@ -79,7 +79,7 @@ functions:
       - httpApi:
           path: /tlas/all/{name}
           method: get
-  read_tla_group_by_name:
+  readTlaGroupByName:
     handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
     environment:
       SPRING_CLOUD_FUNCTION_DEFINITION: getTLAGroupByNameHandler
@@ -87,29 +87,11 @@ functions:
       - httpApi:
           path: /tlas/{groupName}
           method: get
-  add_new_tla_group:
-    handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
-    environment:
-      SPRING_CLOUD_FUNCTION_DEFINITION: addTLAGroupHandler
-    events:
-      - httpApi:
-          path: /tlas
-          method: post
-  add_new_tla:
-    handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
-    environment:
-      SPRING_CLOUD_FUNCTION_DEFINITION: addTLAHandler
-    events:
-      - httpApi:
-          path: /tlas/{groupName}
-          method: post
   acceptTla:
     handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
     environment:
-      SPRING_CLOUD_FUNCTION_DEFINITION: acceptTLAHandler
-          
-  seed_database:
+      SPRING_CLOUD_FUNCTION_DEFINITION: acceptTLAHandler     
+  seedDatabase:
     handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
     environment:
       SPRING_CLOUD_FUNCTION_DEFINITION: databaseSeedHandler
-

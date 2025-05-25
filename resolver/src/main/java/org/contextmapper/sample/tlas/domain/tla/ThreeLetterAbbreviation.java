@@ -1,6 +1,7 @@
 package org.contextmapper.sample.tlas.domain.tla;
 
 import org.contextmapper.sample.tlas.domain.tla.exception.InvalidTLAStateTransitionException;
+
 import org.jmolecules.ddd.annotation.Entity;
 
 import java.net.MalformedURLException;
@@ -8,7 +9,6 @@ import java.net.URL;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.contextmapper.sample.tlas.domain.tla.TLAStatus.*;
 
 @Entity
 public class ThreeLetterAbbreviation implements Comparable<ThreeLetterAbbreviation> {
@@ -17,14 +17,12 @@ public class ThreeLetterAbbreviation implements Comparable<ThreeLetterAbbreviati
     private final String meaning;
     private final Set<String> alternativeMeanings;
     private URL link;
-    private TLAStatus status;
 
     private ThreeLetterAbbreviation(final TLABuilder builder) {
         checkArgument(builder != null);
         checkArgument(builder.name != null, "A TLAs name cannot be null!");
         checkArgument(builder.meaning != null && !builder.meaning.isEmpty(),
                 "A TLAs meaning cannot be null or empty.");
-        checkArgument(builder.status != null, "The status of a TLA must be defined.");
 
         this.name = builder.name;
         this.meaning = builder.meaning;
@@ -37,28 +35,6 @@ public class ThreeLetterAbbreviation implements Comparable<ThreeLetterAbbreviati
                 throw new IllegalArgumentException("The passed link is not a valid URL.", e);
             }
         }
-        this.status = builder.status;
-    }
-
-    public void accept() {
-        if (this.status != PROPOSED)
-            throw new InvalidTLAStateTransitionException("A TLA has to be in state PROPOSED to be accepted.");
-
-        this.status = ACCEPTED;
-    }
-
-    public void decline() {
-        if (this.status != PROPOSED)
-            throw new InvalidTLAStateTransitionException("A TLA has to be in state PROPOSED to be declined.");
-
-        this.status = DECLINED;
-    }
-
-    public void archive() {
-        if (this.status != ACCEPTED)
-            throw new InvalidTLAStateTransitionException("A TLA has to be in state ACCEPTED to be archived.");
-
-        this.status = ARCHIVED;
     }
 
     public Set<String> getAlternativeMeanings() {
@@ -69,10 +45,6 @@ public class ThreeLetterAbbreviation implements Comparable<ThreeLetterAbbreviati
         if (link == null)
             return null;
         return link.toString();
-    }
-
-    public TLAStatus getStatus() {
-        return status;
     }
 
     public String getMeaning() {
@@ -106,7 +78,6 @@ public class ThreeLetterAbbreviation implements Comparable<ThreeLetterAbbreviati
         private String meaning;
         private final Set<String> alternativeMeanings = new HashSet<>();
         private String link;
-        private TLAStatus status = PROPOSED;
 
         public TLABuilder(final ShortName name) {
             this.name = name;
@@ -133,11 +104,6 @@ public class ThreeLetterAbbreviation implements Comparable<ThreeLetterAbbreviati
 
         public TLABuilder withLink(final String link) {
             this.link = link;
-            return this;
-        }
-
-        public TLABuilder withStatus(final TLAStatus status) {
-            this.status = status;
             return this;
         }
 

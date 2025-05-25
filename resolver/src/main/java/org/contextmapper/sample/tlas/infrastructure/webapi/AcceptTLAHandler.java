@@ -8,9 +8,11 @@ import org.contextmapper.sample.tlas.infrastructure.webapi.dtos.TLADto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import static org.contextmapper.sample.tlas.infrastructure.webapi.mapper.TlaApiDTOMapper.tlaDtoToTla;
-import org.contextmapper.sample.tlas.infrastructure.webapi.dtos.TLADto;
+import static org.contextmapper.sample.tlas.infrastructure.webapi.mapper.TlaApiDTOMapper.createTlaGroupDtoToTlaGroup;
+import org.contextmapper.sample.tlas.infrastructure.webapi.dtos.TLAGroupDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -26,8 +28,7 @@ public class AcceptTLAHandler implements Function <ScheduledEvent, Void> {
     private final TlaGroupsApplicationService service;
     private final ObjectMapper objectMapper;
 
-    public AcceptTLAHandler(final TlaGroupsApplicationService service, 
-                            final ObjectMapper objectMapper) {
+    public AcceptTLAHandler(final TlaGroupsApplicationService service, final ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
         this.service = service;
     }
@@ -35,52 +36,56 @@ public class AcceptTLAHandler implements Function <ScheduledEvent, Void> {
     @Override
     public Void apply(ScheduledEvent event) {
         logger.info("AcceptTLAHandler triggered by EventBridge event");
-        Map<String, Object> detail = event.getDetail();
+        try {
+            Map<String, Object> detail = event.getDetail();
 
-        Object groupName = detail.get("tlaGroupName");
-        Object tlaName = detail.get("tlaName");
-        Object tlaMeaning = detail.get("tlaMeaning");
-        Object tlaAlternativeMeanings = detail.get("tlaAlternativeMeanings");
-        Object tlaLink = detail.get("tlaLink");
+            Object groupName = detail.get("tlaGroupName");
+            Object groupDescription = detail.get("tlaGroupDescription");
+            Object tlaName = detail.get("tlaName");
+            Object tlaMeaning = detail.get("tlaMeaning");
+            Object tlaAlternativeMeanings = detail.get("tlaAlternativeMeanings");
+            Object tlaLink = detail.get("tlaLink");
 
-        logger.info("Group name: " + groupName);
-        logger.info("TLA name: " + tlaName);
-        logger.info("TLA meaning: " + tlaMeaning);
-        logger.info("TLA alternative meanings: " + tlaAlternativeMeanings);
-        logger.info("TLA link: " + tlaLink);
+            String jsonString = objectMapper.writeValueAsString(detail);
+            logger.info("Received accept event with the following information: " + jsonString);
 
-        //use objectMapper to convert the detail map to a JSON string
-        String jsonString = objectMapper.writeValueAsString(detail);
-        logger.info("Detail JSON: " + jsonString);
+            if (groupName == null || tlaName == null || tlaMeaning == null) {
+                logger.error("Missing required fields in event detail");
+                return null;
+            }
 
-        if (groupName == null || tlaName == null || tlaMeaning == null) {
-            logger.error("Missing required fields in event detail");
-            return (Void)null;
+            String acceptedGroupName = groupName.toString();
+            String acceptedTlaGroupDescription = groupDescription.toString();
+            String acceptedTlaName = tlaName.toString();
+            String acceptedTlaMeaning = tlaMeaning.toString();
+            Set<String> acceptedTlaAlternativeMeanings = null;
+            if (tlaAlternativeMeanings instanceof List) {
+                acceptedTlaAlternativeMeanings = ((List<?>) tlaAlternativeMeanings).stream()
+                        .map(Object::toString)
+                        .filter(s -> !s.isEmpty())
+                        .collect(java.util.stream.Collectors.toSet());
+            }
+            String acceptedTlaLink = null;
+            if (tlaLink != null) {
+                acceptedTlaLink = tlaLink.toString();
+            }
+
+            persistTLA(acceptedGroupName, acceptedTlaGroupDescription, acceptedTlaName, acceptedTlaMeaning, acceptedTlaAlternativeMeanings, acceptedTlaLink);
+            return null;
+
+        } catch (Exception e) {
+            logger.error("Internal error has happened", e);
+            return null;
         }
-
-        String acceptedGroupName = groupName.toString();
-        String acceptedTlaName = tlaName.toString();
-        String acceptedTlaMeaning = tlaMeaning.toString();
-        Set<String> acceptedTlaAlternativeMeanings = null;
-        if (tlaAlternativeMeanings instanceof List) {
-            acceptedTlaAlternativeMeanings = ((List<?>) tlaAlternativeMeanings).stream()
-                    .map(Object::toString)
-                    .filter(s -> !s.isEmpty())
-                    .collect(java.util.stream.Collectors.toSet());
-        }
-        String acceptedTlaLink = null;
-        if (tlaLink != null) {
-            acceptedTlaLink = tlaLink.toString();
-        }
-
-        persistTLA(acceptedGroupName, acceptedTlaName, acceptedTlaMeaning, acceptedTlaAlternativeMeanings, acceptedTlaLink);
-        return null;
     }
 
-    private void persistTLA(String groupName, String tlaName, String tlaMeaning, Set<String> tlaAlternativeMeanings, String tlaLink) {
-        var dto = new TLADto(tlaName, tlaMeaning)
+    private void persistTLA(String groupName, String groupDescription, String tlaName, String tlaMeaning, Set<String> tlaAlternativeMeanings, String tlaLink) {
+        var tlaDto = new TLADto(tlaName, tlaMeaning)
                 .alternativeMeanings(tlaAlternativeMeanings)
                 .link(tlaLink);
-        service.addTLA(groupName, tlaDtoToTla(dto));
+
+        var groupDto = new TLAGroupDto(groupName, groupDescription, new ArrayList<TLADto>());
+        service.addTLAGroup(createTlaGroupDtoToTlaGroup(groupDto));
+        service.addTLA(groupName, tlaDtoToTla(tlaDto));
     }
 }

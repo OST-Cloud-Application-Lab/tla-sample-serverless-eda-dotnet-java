@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.contextmapper.sample.tlas.domain.tla.TLAStatus.ACCEPTED;
 
 @Service
 public class TlaGroupsApplicationService {
@@ -21,18 +20,13 @@ public class TlaGroupsApplicationService {
     }
 
     public List<TLAGroup> findAllTLAGroups() {
-        return findAllTLAGroups(ACCEPTED);
-    }
-
-    public List<TLAGroup> findAllTLAGroups(TLAStatus status) {
         return repository.findAll().stream()
-                .map(group -> filterTLAStatus(group, status))
                 .filter(group -> !group.getTLAs().isEmpty())
                 .toList();
     }
 
     public List<TLAGroup> findAllTLAsByName(final String name) {
-        return findAllTLAGroups(ACCEPTED).stream()
+        return findAllTLAGroups().stream()
                 .filter(group -> group.getTLAs().stream().anyMatch(tla -> tla.getName().toString().equals(name)))
                 .map(group -> new TLAGroupBuilder(
                         group.getName().toString())
@@ -45,12 +39,12 @@ public class TlaGroupsApplicationService {
     }
 
     public TLAGroup findGroupByName(final String name) {
-        return filterTLAStatus(getGroupByName(name), ACCEPTED);
+        return getGroupByName(name);
     }
 
     public TLAGroup addTLAGroup(final TLAGroup tlaGroup) {
         if (tlaGroupAlreadyExists(tlaGroup.getName())) {
-            throw new TLAGroupNameAlreadyExists(tlaGroup.getName().toString());
+            return tlaGroup;
         }
         return repository.save(tlaGroup);
     }
@@ -59,12 +53,6 @@ public class TlaGroupsApplicationService {
         var group = getGroupByName(groupName);
         group.addTLA(tla);
         return repository.save(group);
-    }
-
-    public void acceptTLA(final String groupName, final String tlaName) {
-        var group = getGroupByName(groupName);
-        group.acceptTLA(new ShortName(tlaName));
-        repository.save(group);
     }
 
     private TLAGroup getGroupByName(final String name) {
@@ -85,14 +73,4 @@ public class TlaGroupsApplicationService {
         return findAllTLAGroups().stream()
                 .anyMatch(group -> group.getName().equals(name));
     }
-
-    private TLAGroup filterTLAStatus(final TLAGroup tlaGroup, final TLAStatus status) {
-        return new TLAGroupBuilder(tlaGroup.getName().toString())
-                .withDescription(tlaGroup.getDescription())
-                .withTLAs(tlaGroup.getTLAs().stream()
-                        .filter(tla -> tla.getStatus() == status)
-                        .toList())
-                .build();
-    }
-
 }

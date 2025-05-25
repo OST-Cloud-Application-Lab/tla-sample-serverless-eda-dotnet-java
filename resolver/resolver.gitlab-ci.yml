@@ -31,7 +31,7 @@ deploy-resolver:
   script:
     - echo "Deploying application..."
     - sls deploy
-    - sls invoke --function seed_database --data 'unused'
+    - sls invoke --function seedDatabase --data 'unused'
     - echo "Application successfully deployed."
   dependencies: [build-resolver]
 

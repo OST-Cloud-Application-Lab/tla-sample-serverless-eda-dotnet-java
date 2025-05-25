@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 
 import static org.contextmapper.sample.tlas.domain.tla.TLAGroup.COMMON_GROUP;
-import static org.contextmapper.sample.tlas.domain.tla.TLAStatus.ACCEPTED;
 
 @Component
 public class DatabaseSeedHandler implements Function<String, String> {
@@ -32,7 +31,6 @@ public class DatabaseSeedHandler implements Function<String, String> {
                     .withTLA(new ThreeLetterAbbreviation.TLABuilder("TLA")
                             .withMeaning("Three Letter Abbreviation")
                             .withAlternativeMeaning("Three Letter Acronym")
-                            .withStatus(ACCEPTED)
                             .build())
                     .build());
 
@@ -41,7 +39,6 @@ public class DatabaseSeedHandler implements Function<String, String> {
                     .withTLA(new ThreeLetterAbbreviation.TLABuilder("ADR")
                             .withMeaning("Architectural Decision Record")
                             .withLink("https://adr.github.io/")
-                            .withStatus(ACCEPTED)
                             .build())
                     .build());
 
@@ -49,23 +46,18 @@ public class DatabaseSeedHandler implements Function<String, String> {
                     .withDescription("Domain-Driven Design")
                     .withTLA(new ThreeLetterAbbreviation.TLABuilder("OHS")
                             .withMeaning("Open Host Service")
-                            .withStatus(ACCEPTED)
                             .build())
                     .withTLA(new ThreeLetterAbbreviation.TLABuilder("PL")
                             .withMeaning("Published Language")
-                            .withStatus(ACCEPTED)
                             .build())
                     .withTLA(new ThreeLetterAbbreviation.TLABuilder("CF")
                             .withMeaning("Conformist")
-                            .withStatus(ACCEPTED)
                             .build())
                     .withTLA(new ThreeLetterAbbreviation.TLABuilder("SK")
                             .withMeaning("Shared Kernel")
-                            .withStatus(ACCEPTED)
                             .build())
                     .withTLA(new ThreeLetterAbbreviation.TLABuilder("ACL")
                             .withMeaning("Anticorruption Layer")
-                            .withStatus(ACCEPTED)
                             .build())
                     .build());
         } catch (Exception e) {

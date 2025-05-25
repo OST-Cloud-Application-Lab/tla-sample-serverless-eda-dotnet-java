@@ -45,42 +45,42 @@ resources:
         TableName: ${self:provider.environment.TLA_TABLE_NAME}
 
 functions:
-  read_all_tla_groups:
+  readAllTlaGroups:
     handler: TLAManager.Infrastructure::TLAManager.Infrastructure.WebApi.Functions.GetAllTlaGroupsFunction::GetAllTlaGroupsAsync
     events:
       - httpApi:
           path: /tlas
           method: get
-  read_all_tlas:
+  readAllTlas:
     handler: TLAManager.Infrastructure::TLAManager.Infrastructure.WebApi.Functions.GetAllTlasFunction::GetAllTlasAsync
     events:
       - httpApi:
           path: /tlas/all/{name}
           method: get
-  read_tla_group_by_name:
+  readTlaGroupByName:
     handler: TLAManager.Infrastructure::TLAManager.Infrastructure.WebApi.Functions.GetTlaGroupByNameFunction::GetTlaGroupByNameAsync
     events:
       - httpApi:
           path: /tlas/{groupName}
           method: get
-  add_new_tla_group:
+  addNewTlaGroup:
     handler: TLAManager.Infrastructure::TLAManager.Infrastructure.WebApi.Functions.AddTlaGroupFunction::AddTlaGroupAsync
     events:
       - httpApi:
           path: /tlas
           method: post
-  add_new_tla:
+  addNewTla:
     handler: TLAManager.Infrastructure::TLAManager.Infrastructure.WebApi.Functions.AddTlaFunction::AddTlaAsync
     events:
       - httpApi:
           path: /tlas/{groupName}
           method: post
-  accept_tla:
+  acceptTla:
     handler: TLAManager.Infrastructure::TLAManager.Infrastructure.WebApi.Functions.AcceptTlaFunction::AcceptTlaAsync
     events:
       - httpApi:
           path: /tlas/{groupName}/{name}/accept
           method: put
-  seed_database:
+  seedDatabase:
     handler: TLAManager.Infrastructure::TLAManager.Infrastructure.Migration.DatabaseSeedHandler::SeedAsync
   

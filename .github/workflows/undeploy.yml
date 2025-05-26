@@ -14,9 +14,8 @@ jobs:
         with:
           node-version: 18.x
       - run: npm install -g serverless
-      - name: Switch to microservice directory
-        run: cd resolver
       - run: serverless remove
+        working-directory: resolver
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
   undeploy_manager:
@@ -29,9 +28,8 @@ jobs:
         with:
           node-version: 18.x
       - run: npm install -g serverless
-      - name: Switch to microservice directory
-        run: cd manager
       - run: serverless remove
+        working-directory: manager
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
   undeploy_eventbridge:
@@ -47,8 +45,7 @@ jobs:
         with:
           node-version: 18.x
       - run: npm install -g serverless
-      - name: Switch to microservice directory
-        run: cd eventbridge
       - run: serverless remove
+        working-directory: eventbridge
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}

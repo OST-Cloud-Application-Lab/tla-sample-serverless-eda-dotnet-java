@@ -19,9 +19,8 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.408'
-      - name: Switch to microservice directory
-        run: cd manager
       - name: Build using shell script
+        working-directory: manager
         run: ./.build.sh
       - uses: actions/cache@v4
         id: cache-manager-release
@@ -41,9 +40,8 @@ jobs:
           cache: maven
       - name: Install Graphviz
         run: sudo apt-get -y install graphviz
-      - name: Switch to microservice directory
-        run: cd resolver
       - name: Build with Maven
+        working-directory: resolver
         run: ./mvnw -B package --file pom.xml
       - uses: actions/cache@v4
         id: cache-resolver-target
@@ -64,9 +62,8 @@ jobs:
         with:
           node-version: 18.x
       - run: npm install -g serverless
-      - name: Switch to microservice directory
-        run: cd eventbridge
       - run: serverless deploy
+        working-directory: eventbridge
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
   deploy_manager:
@@ -87,12 +84,12 @@ jobs:
           path: manager/bin/release
           key: tla-sample-app-serverless-manager-release-${{ github.run_id }}
       - run: npm install -g serverless
-      - name: Switch to microservice directory
-        run: cd manager
       - run: serverless deploy
+        working-directory: manager
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
       - run: serverless invoke --function seedDatabase --data 'unused'
+        working-directory: manager
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
   deploy_resolver:
@@ -113,11 +110,11 @@ jobs:
           path: resolver/target
           key: tla-sample-app-serverless-resolver-target-${{ github.run_id }}
       - run: npm install -g serverless
-      - name: Switch to microservice directory
-        run: cd resolver
       - run: serverless deploy
+        working-directory: resolver
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
       - run: serverless invoke --function seedDatabase --data 'unused'
+        working-directory: resolver
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}

@@ -15,8 +15,10 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update && sudo apt-get install -y zip curl libicu-dev
-          curl -sSL https://dot.net/v1/dotnet-install.sh | bash -s -- --version 8.0.408 --install-dir /usr/bin/dotnet
-          export PATH=$PATH:/usr/bin/dotnet
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.408'
       - name: Switch to microservice directory
         run: cd manager
       - name: Build using shell script

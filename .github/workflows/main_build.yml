@@ -7,7 +7,28 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build_manager:
+    name: Build TLA Manager
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y zip curl libicu-dev
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.408'
+      - name: Build using shell script
+        working-directory: manager
+        run: ./.build.sh
+      - uses: actions/cache@v4
+        id: cache-manager-release
+        with:
+          path: manager/bin/release/net8.0
+          key: tla-sample-app-serverless-manager-release-${{ github.run_id }}
+  build_resolver:
+    name: Build TLA Resolver
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -20,17 +41,37 @@ jobs:
       - name: Install Graphviz
         run: sudo apt-get -y install graphviz
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        working-directory: resolver
+        run: ./mvnw -B package --file pom.xml
       - uses: actions/cache@v4
-        id: cache-target
+        id: cache-resolver-target
         with:
-          path: target
-          key: tla-sample-app-serverless-target-${{ github.run_id }}
+          path: resolver/target
+          key: tla-sample-app-serverless-resolver-target-${{ github.run_id }}
 
-  deploy:
-    name: deploy
+  deploy_event_bridge:
+    name: Deploy Infrastructure (Event Bridge)
     runs-on: ubuntu-latest
-    needs: build
+    needs:
+      - build_manager
+      - build_resolver
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - run: npm install -g serverless
+      - run: serverless deploy
+        working-directory: eventbridge
+        env:
+          SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+  deploy_manager:
+    name: Deploy TLA Manager
+    runs-on: ubuntu-latest
+    needs:
+      - build_manager
+      - deploy_event_bridge
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 18.x
@@ -38,14 +79,42 @@ jobs:
         with:
           node-version: 18.x
       - uses: actions/cache@v4
-        id: cache-target
+        id: cache-manager-release
         with:
-          path: target
-          key: tla-sample-app-serverless-target-${{ github.run_id }}
+          path: manager/bin/release/net8.0
+          key: tla-sample-app-serverless-manager-release-${{ github.run_id }}
       - run: npm install -g serverless
       - run: serverless deploy
+        working-directory: manager
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
-      - run: serverless invoke --function seed_database --data 'unused'
+      - run: serverless invoke --function seedDatabase --data 'unused'
+        working-directory: manager
+        env:
+          SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+  deploy_resolver:
+    name: Deploy TLA Resolver
+    runs-on: ubuntu-latest
+    needs:
+      - build_resolver
+      - deploy_event_bridge
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - uses: actions/cache@v4
+        id: cache-resolver-target
+        with:
+          path: resolver/target
+          key: tla-sample-app-serverless-resolver-target-${{ github.run_id }}
+      - run: npm install -g serverless
+      - run: serverless deploy
+        working-directory: resolver
+        env:
+          SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+      - run: serverless invoke --function seedDatabase --data 'unused'
+        working-directory: resolver
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}

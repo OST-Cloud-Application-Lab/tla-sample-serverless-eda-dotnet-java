@@ -45,12 +45,12 @@ This section documents the different type of events.
 The general format of EventBridge events is documented in the [Amazon documentation](https://docs.aws.amazon.com/eventbridge/latest/ref/overiew-event-structure.html).
 All events use the "detail-type" to differentiate between the different types of events.
 
-#### Accept TLA Event
+#### TLA Accepted Event
 When accepting a TLA (see [Accept a Proposed TLA](#accept-a-proposed-tla)) the "TLA Manager" sends an event to the EventBridge.
 The event includes the necessary information for the "TLA Resolver" to add the accepted TLA to its database.
-The event has a "detail-type" of "AcceptTla".
+The event has a `detail-type` of `TLA_Accepted`.
 
-The "detail" of the event has the following format:
+The `detail` of the event has the following format:
 ```json
 {
     "tlaGroupName": "{Name of Group}",
@@ -61,7 +61,43 @@ The "detail" of the event has the following format:
         "{Alternative meaning 1}",
         "{Alternative meaning 2}"
     ],
-    "tlaLink": null | "{tla link}"
+    "tlaLink": "{tla link, nullable}"
+}
+```
+
+Here, an example of an actual event:
+
+```json
+{
+    "version": "0",
+    "id": "4fb14a18-76fe-f6c8-eccf-65d23adfecbb",
+    "detail-type": "TLA_Accepted",
+    "source": "TLAManager",
+    "account": "64...72",
+    "time": "2025-05-26T10:52:59Z",
+    "region": "us-east-1",
+    "resources": [],
+    "detail": {
+        "metadata": {
+            "version": "1.0",
+            "created_at": "5/26/2025 10:52:59 AM",
+            "domain": {
+                "name": "TLAs",
+                "subdomain": "review_process",
+                "service": "TLAManager",
+                "category": "domain_event",
+                "event": "TLA_Accepted"
+            }
+        },
+        "data": {
+            "tlaGroupName": "OST",
+            "tlaGroupDescription": "OST modules",
+            "tlaName": "CldSol",
+            "tlaMeaning": "Cloud Solutions",
+            "tlaAlternativeMeanings": [],
+            "tlaLink": null
+        }
+    }
 }
 ```
 
@@ -69,7 +105,7 @@ The "detail" of the event has the following format:
 
 ### Build and Deploy
 
-As a prerequisite you must have the [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download) and the [serverless CLI](https://www.serverless.com/framework/docs/getting-started) installed.
+As a prerequisite, you must have the [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download) and the [serverless CLI](https://www.serverless.com/framework/docs/getting-started) installed.
 
 Building the app is done using the dotnet CLI.
 We provide a build script which executes the necessary commands for you:

@@ -25,7 +25,7 @@ The app uses the following tools and frameworks:
  * The [AWS SDK for .NET](https://docs.aws.amazon.com/sdk-for-net/v4/developer-guide/welcome.html) to connect the manager functions to the DynamoDB and EventBridge.
  * The [Serverless Framework](https://www.serverless.com/) to deploy the whole application on AWS.
    * Including the definition of the API endpoints, the DynamoDB table and the EventBridge. 
- * [GitLab CI/CD Pipelines](https://github.com/stefan-ka/tla-sample-serverless/actions) as CI/CD tool to automatically deploy the app to AWS.
+ * [GitLab CI/CD Pipelines](https://github.com/OST-Cloud-Application-Lab/tla-sample-serverless-eda-dotnet-java/actions) as CI/CD tool to automatically deploy the app to AWS.
 
 The following graphic shows a more detailed architecture overview:
 

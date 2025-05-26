@@ -66,14 +66,27 @@ public class AcceptTlaFunction : FunctionBase
     private static async Task SendAcceptEventAsync(AmazonEventBridgeClient eventBridgeClient, TLAGroup acceptedGroup, string acceptedTlaName, ILambdaContext context)
     {
         var acceptedTla = acceptedGroup.Tlas.First(tla => tla.Name.Name == acceptedTlaName);
-        var acceptEventDto = new TLAAcceptEventDto
+        var tlaAcceptedEvent = new GenericDomainEvent<TLAAcceptedEventDto>
         {
-            TlaGroupName = acceptedGroup.Name.Name,
-            TlaGroupDescription = acceptedGroup.Description,
-            TlaName = acceptedTla.Name.Name,
-            TlaMeaning = acceptedTla.Meaning,
-            TlaAlternativeMeanings = acceptedTla.AlternativeMeanings.ToList(),
-            TlaLink = acceptedTla.GetAbsoluteUri()
+            Metadata = new DomainEventMetadata
+            {
+                Created_at = DateTime.UtcNow.ToString(),
+                Domain = new DomainEventDomainMetaData
+                {
+                    Subdomain = "review_process",
+                    Service = EventBusConsts.TLAManagerSource,
+                    Event = EventType.TLA_Accepted.ToString()
+                }
+            },
+            Data = new TLAAcceptedEventDto
+            {
+                TlaGroupName = acceptedGroup.Name.Name,
+                TlaGroupDescription = acceptedGroup.Description,
+                TlaName = acceptedTla.Name.Name,
+                TlaMeaning = acceptedTla.Meaning,
+                TlaAlternativeMeanings = acceptedTla.AlternativeMeanings.ToList(),
+                TlaLink = acceptedTla.GetAbsoluteUri()
+            }
         };
         var eventBridgeRequest = new PutEventsRequest
         {
@@ -84,8 +97,8 @@ public class AcceptTlaFunction : FunctionBase
                     Time = DateTime.UtcNow,
                     EventBusName = EventBusConsts.EventBusDestination,
                     Source = EventBusConsts.TLAManagerSource,
-                    DetailType = EventType.AcceptTla.ToString(),
-                    Detail = JsonSerializer.Serialize(acceptEventDto, JsonOptions.SerializerOptions)
+                    DetailType = EventType.TLA_Accepted.ToString(),
+                    Detail = JsonSerializer.Serialize(tlaAcceptedEvent, JsonOptions.SerializerOptions)
                 }
             ]
         };

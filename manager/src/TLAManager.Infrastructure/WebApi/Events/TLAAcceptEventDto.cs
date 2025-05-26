@@ -1,6 +1,6 @@
 namespace TLAManager.Infrastructure.WebApi.Events;
 
-public class TLAAcceptEventDto
+public class TLAAcceptedEventDto
 {
     public string TlaGroupName { get; set; } = string.Empty;
 

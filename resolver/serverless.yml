@@ -37,7 +37,7 @@ resources:
           - AttributeName: "name"
             KeyType: "HASH"
         TableName: ${self:provider.environment.TLA_TABLE_NAME}
-    AcceptTLARule:
+    TLAAcceptedRule:
       Type: AWS::Events::Rule
       Properties:
         EventBusName: !ImportValue TLAEventBusName
@@ -45,13 +45,13 @@ resources:
           source:
             - "TLAManager"
           detail-type:
-            - "AcceptTla"
-        Name: accept-tla-rule-1
+            - "TLA_Accepted"
+        Name: tla-accepted-rule-1
         Targets:
           - Arn: !GetAtt 
               - AcceptTlaLambdaFunction
               - Arn
-            Id: accept_tla
+            Id: tla_accepted
     PermissionInvokeLambda: 
       Type: AWS::Lambda::Permission
       Properties: 
@@ -59,7 +59,7 @@ resources:
           Action: "lambda:InvokeFunction"
           Principal: "events.amazonaws.com"
           SourceArn: !GetAtt
-                  - "AcceptTLARule"
+                  - "TLAAcceptedRule"
                   - "Arn"
 
 functions:

@@ -2,5 +2,5 @@ namespace TLAManager.Infrastructure.WebApi.Events;
 
 public enum EventType
 {
-    AcceptTla
+    TLA_Accepted
 }

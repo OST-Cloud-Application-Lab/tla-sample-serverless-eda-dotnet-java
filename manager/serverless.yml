@@ -1,4 +1,4 @@
-org: cldsolgrp09
+org: osttlasample3
 app: tla-manager-serverless
 service: tla-manager-serverless
 provider:

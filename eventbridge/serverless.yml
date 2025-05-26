@@ -1,4 +1,4 @@
-org: cldsolgrp09
+org: osttlasample3
 app: tla-eventbridge-serverless
 service: tla-eventbridge-serverless
 provider:

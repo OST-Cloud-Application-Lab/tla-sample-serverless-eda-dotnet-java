@@ -590,5 +590,8 @@ Contributions are always welcome! Here are some ways how you can contribute:
   [forks of this repository](https://help.github.com/articles/fork-a-repo/). Please refer to a GitHub issue if you
   contribute this way.
 
+## Acknowledgements
+This refactored version of the [original serverless TLA sample application](https://github.com/OST-Cloud-Application-Lab/tla-sample-serverless) was implemented by [Anja Friedrich](https://github.com/zwieble) and [Mona Panchaud](https://github.com/panmona) as part of a group assignment for the [Cloud Solutions](https://studien.ost.ch/allModules/37167_M_CldSol.html) course at [OST](https://www.ost.ch/de/studium/informatik/bachelor-informatik) in the spring semester of 2025. Many thanks to Anja and Mona for their contribution!
+
 ## Licence
 This project is released under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).

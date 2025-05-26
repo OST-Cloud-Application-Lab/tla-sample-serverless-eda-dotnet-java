@@ -25,7 +25,7 @@ jobs:
       - uses: actions/cache@v4
         id: cache-manager-release
         with:
-          path: manager/bin/release
+          path: manager/bin/release/net8.0
           key: tla-sample-app-serverless-manager-release-${{ github.run_id }}
   build_resolver:
     name: Build TLA Resolver
@@ -81,7 +81,7 @@ jobs:
       - uses: actions/cache@v4
         id: cache-manager-release
         with:
-          path: manager/bin/release
+          path: manager/bin/release/net8.0
           key: tla-sample-app-serverless-manager-release-${{ github.run_id }}
       - run: npm install -g serverless
       - run: serverless deploy

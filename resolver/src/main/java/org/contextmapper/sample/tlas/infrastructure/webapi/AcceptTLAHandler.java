@@ -38,15 +38,16 @@ public class AcceptTLAHandler implements Function <ScheduledEvent, Void> {
         logger.info("AcceptTLAHandler triggered by EventBridge event");
         try {
             Map<String, Object> detail = event.getDetail();
+            Map<String, Object> data = (Map<String, Object>) detail.get("data");
 
-            Object groupName = detail.get("tlaGroupName");
-            Object groupDescription = detail.get("tlaGroupDescription");
-            Object tlaName = detail.get("tlaName");
-            Object tlaMeaning = detail.get("tlaMeaning");
-            Object tlaAlternativeMeanings = detail.get("tlaAlternativeMeanings");
-            Object tlaLink = detail.get("tlaLink");
+            Object groupName = data.get("tlaGroupName");
+            Object groupDescription = data.get("tlaGroupDescription");
+            Object tlaName = data.get("tlaName");
+            Object tlaMeaning = data.get("tlaMeaning");
+            Object tlaAlternativeMeanings = data.get("tlaAlternativeMeanings");
+            Object tlaLink = data.get("tlaLink");
 
-            String jsonString = objectMapper.writeValueAsString(detail);
+            String jsonString = objectMapper.writeValueAsString(data);
             logger.info("Received accept event with the following information: " + jsonString);
 
             if (groupName == null || tlaName == null || tlaMeaning == null) {

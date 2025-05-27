@@ -6,7 +6,7 @@ This repository implements the [Three Letter Abbreviations (TLA) Sample Applicat
 It can easily be deployed on AWS. 
 The following graphic gives an architecture overview of the app:
 
-![TLA Sample App - Implemented Serverless](./docs/images/Architecture_Overview.png)
+![TLA Sample App - Implemented Serverless](./docs/images/Architecture_Overview.jpg)
 
 The app uses the following AWS services:
  * **Amazon API Gateway** now serves the RESTful HTTP API to access the TLA's.
@@ -144,9 +144,7 @@ _Note_ that you will need to replace `{baseUrl}` with the URLs you get from `sls
 | /tlas                           | GET    | Get all TLA groups including their TLAs (accepted TLAs only).                                                                                                                                 |
 | /tlas?status=PROPOSED           | GET    | Get TLAs in PROPOSED state.                                                                                                                                                                   |
 | /tlas                           | POST   | Create a new TLA group (see sample payload below). Containing TLAs will be in PROPOSED state.                                                                                                 |
-| /tlas/{groupName}               | GET    | Get all TLAs of a specific group.                                                                                                                                                             |
 | /tlas/{groupName}               | POST   | Create a new TLA within an existing group (see sample payload below). The created TLA will be in PROPOSED state.                                                                              |
-| /tlas/all/{name}                | GET    | Search for a TLA over all groups. This query can return multiple TLAs as a single TLA is only unique within one group.                                                                        |
 | /tlas/{groupName}/{name}/accept | PUT    | Accept a proposed TLA ([state transition operation](https://microservice-api-patterns.org/patterns/responsibility/operationResponsibilities/StateTransitionOperation): PROPOSED -> ACCEPTED). |
 
 #### Get All TLA Groups
@@ -225,70 +223,6 @@ The `/tlas` (GET) endpoint returns all TLAs of all TLA groups that are in the `A
 
 Note that the endpoint returns all TLAs in state `ACCEPTED` by default.
 Use the query parameter `status` with the value `PROPOSED` to list TLAs in the `PROPOSED` state (see example below under "Query Proposed TLAs").
-
-#### Get TLAs of a Specific Group
-The endpoint `/tlas/{groupName}` (GET) returns all TLAs of a specific group.
-
-**Sample CURL**: `curl -X GET {baseUrl}/tlas/DDD`
-
-**Sample output:**
-
-```json
-{
-    "name": "DDD",
-    "description": "Domain-Driven Design",
-    "tlas": [
-        {
-            "name": "ACL",
-            "meaning": "Anticorruption Layer",
-            "alternativeMeanings": []
-        },
-        {
-            "name": "CF",
-            "meaning": "Conformist",
-            "alternativeMeanings": []
-        },
-        {
-            "name": "OHS",
-            "meaning": "Open Host Service",
-            "alternativeMeanings": []
-        },
-        {
-            "name": "PL",
-            "meaning": "Published Language",
-            "alternativeMeanings": []
-        },
-        {
-            "name": "SK",
-            "meaning": "Shared Kernel",
-            "alternativeMeanings": []
-        }
-    ]
-}
-```
-
-#### Search TLA in All Groups
-With the endpoint `/tlas/all/{name}` (GET) you can search for a TLA through all groups. Note that this might return multiple results, as TLAs are only unique within one group.
-
-**Sample CURL**: `curl -X GET {baseUrl}/tlas/all/ACL`
-
-**Sample output:**
-
-```json
-[
-    {
-        "name": "DDD",
-        "description": "Domain-Driven Design",
-        "tlas": [
-            {
-                "name": "ACL",
-                "meaning": "Anticorruption Layer",
-                "alternativeMeanings": []
-            }
-        ]
-    }
-]
-```
 
 #### Create new TLA Group
 Via `/tlas` (POST) you can create a new TLA group.

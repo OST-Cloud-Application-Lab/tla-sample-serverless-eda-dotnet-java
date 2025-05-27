@@ -51,18 +51,6 @@ functions:
       - httpApi:
           path: /tlas
           method: get
-  readAllTlas:
-    handler: TLAManager.Infrastructure::TLAManager.Infrastructure.WebApi.Functions.GetAllTlasFunction::GetAllTlasAsync
-    events:
-      - httpApi:
-          path: /tlas/all/{name}
-          method: get
-  readTlaGroupByName:
-    handler: TLAManager.Infrastructure::TLAManager.Infrastructure.WebApi.Functions.GetTlaGroupByNameFunction::GetTlaGroupByNameAsync
-    events:
-      - httpApi:
-          path: /tlas/{groupName}
-          method: get
   addNewTlaGroup:
     handler: TLAManager.Infrastructure::TLAManager.Infrastructure.WebApi.Functions.AddTlaGroupFunction::AddTlaGroupAsync
     events:

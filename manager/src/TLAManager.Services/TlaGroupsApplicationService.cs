@@ -18,26 +18,6 @@ public class TlaGroupsApplicationService(ITLAGroupRepository repository) : ITlaG
             .ToList();
     }
 
-    public async Task<List<TLAGroup>> FindAllTlasByNameAsync(string name)
-    {
-        var groups = await FindAllTlaGroupsAsync(TLAStatus.Accepted);
-        return groups.Where(group => group.Tlas.Any(tla => tla.Name.Name.Equals(name)))
-            .Select(group => new TLAGroup(
-                group.Name,
-                group.Description,
-                new List<ThreeLetterAbbreviation>
-                {
-                    group.Tlas.First(tla => tla.Name.Name.Equals(name))
-                }
-            ))
-            .ToList();
-    }
-
-    public async Task<TLAGroup> FindGroupByNameAsync(string name)
-    {
-        return FilterTlaStatus(await GetGroupByNameAsync(name), TLAStatus.Accepted);
-    }
-
     public async Task<TLAGroup> AddTlaGroupAsync(TLAGroup tlaGroup)
     {
         if (await TlaGroupAlreadyExistsAsync(tlaGroup.Name))

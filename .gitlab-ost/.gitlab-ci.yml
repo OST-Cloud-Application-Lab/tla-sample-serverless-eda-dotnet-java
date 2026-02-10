@@ -15,14 +15,5 @@ top-level-job:
 
 include:
   - local: 'manager/manager.gitlab-ci.yml'
-    rules:
-      - changes:
-        - 'manager/**'
   - local: 'resolver/resolver.gitlab-ci.yml'
-    rules:
-      - changes:
-        - 'resolver/**'
   - local: 'eventbridge/eventbridge.gitlab-ci.yml'
-    rules:
-      - changes:
-        - 'eventbridge/**'

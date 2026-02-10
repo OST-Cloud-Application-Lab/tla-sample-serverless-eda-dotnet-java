@@ -2,12 +2,12 @@ package org.contextmapper.sample.tlas.infrastructure.webapi;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.contextmapper.sample.tlas.application.TlaGroupsApplicationService;
 import org.contextmapper.sample.tlas.infrastructure.webapi.mapper.TlaApiDTOMapper;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.function.Function;
 

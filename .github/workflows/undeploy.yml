@@ -8,30 +8,32 @@ jobs:
     name: Undeploy Resolver
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v6
+      - name: Use Node.js 25.x
+        uses: actions/setup-node@v6
         with:
-          node-version: 18.x
+          node-version: 25.x
       - run: npm install -g serverless
       - run: serverless remove
         working-directory: resolver
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          SLS_AWS_SDK: 3
   undeploy_manager:
     name: Undeploy Manager
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v6
+      - name: Use Node.js 25.x
+        uses: actions/setup-node@v6
         with:
-          node-version: 18.x
+          node-version: 25.x
       - run: npm install -g serverless
       - run: serverless remove
         working-directory: manager
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          SLS_AWS_SDK: 3
   undeploy_eventbridge:
     name: Undeploy Infrastructure (Event Bridge)
     runs-on: ubuntu-latest
@@ -39,13 +41,14 @@ jobs:
       - undeploy_resolver
       - undeploy_manager
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v6
+      - name: Use Node.js 25.x
+        uses: actions/setup-node@v6
         with:
-          node-version: 18.x
+          node-version: 25.x
       - run: npm install -g serverless
       - run: serverless remove
         working-directory: eventbridge
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          SLS_AWS_SDK: 3

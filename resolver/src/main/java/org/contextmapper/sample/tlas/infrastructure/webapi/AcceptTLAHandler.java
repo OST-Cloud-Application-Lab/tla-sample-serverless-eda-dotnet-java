@@ -5,20 +5,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.contextmapper.sample.tlas.application.TlaGroupsApplicationService;
 import org.contextmapper.sample.tlas.infrastructure.webapi.dtos.TLADto;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.ArrayList;
-
-import static org.contextmapper.sample.tlas.infrastructure.webapi.mapper.TlaApiDTOMapper.tlaDtoToTla;
-import static org.contextmapper.sample.tlas.infrastructure.webapi.mapper.TlaApiDTOMapper.createTlaGroupDtoToTlaGroup;
 import org.contextmapper.sample.tlas.infrastructure.webapi.dtos.TLAGroupDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
 
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+
+import static org.contextmapper.sample.tlas.infrastructure.webapi.mapper.TlaApiDTOMapper.createTlaGroupDtoToTlaGroup;
+import static org.contextmapper.sample.tlas.infrastructure.webapi.mapper.TlaApiDTOMapper.tlaDtoToTla;
 
 @Component
 public class AcceptTLAHandler implements Function <ScheduledEvent, Void> {

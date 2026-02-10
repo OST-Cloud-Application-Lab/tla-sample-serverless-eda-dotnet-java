@@ -9,7 +9,7 @@ stages:
 build-resolver:
   extends: .resolver
   stage: build
-  image: openjdk:17-alpine
+  image: eclipse-temurin:21-jdk-noble
   script:
     - echo "Building application..."
     - ./mvnw clean package

@@ -4,7 +4,7 @@ service: tla-resolver-serverless
 provider:
   name: aws
   region: us-east-1
-  runtime: java17
+  runtime: java21
   timeout: 10
   environment:
     TLA_TABLE_NAME: tla-resolver-table-dev

@@ -105,7 +105,7 @@ Here, an example of an actual event:
 
 ### Build and Deploy
 
-As a prerequisite, you must have the [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download) and the [serverless CLI](https://www.serverless.com/framework/docs/getting-started) installed.
+As a prerequisite, you must have the [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download) and the [serverless CLI](https://www.serverless.com/framework/docs/getting-started) installed.
 
 Building the app is done using the dotnet CLI.
 We provide a build script which executes the necessary commands for you:
@@ -115,7 +115,7 @@ cd manager
 ./.build.sh
 ```
 
-The command above creates a zip file `bin/release/net8.0/deploy-package.zip` which contains all the functions (lambdas) of the app.
+The command above creates a zip file `bin/release/net10.0/deploy-package.zip` which contains all the functions (lambdas) of the app.
 Once successfully built, the app is easily deployed with:
 
 ```bash

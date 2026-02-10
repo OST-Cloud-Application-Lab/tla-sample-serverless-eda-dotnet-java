@@ -1,6 +1,7 @@
 variables:
   PROJECT_VERSION: 1.2-SNAPSHOT
-  SLS_IMAGE: registry.gitlab.ost.ch:45023/stefan.kapferer/serverless-framework-docker-image/sls:v1.0
+  SLS_IMAGE: registry.gitlab.ost.ch:45023/stefan.kapferer/serverless-framework-docker-image/sls:v1.1
+  SLS_AWS_SDK: 3
 
 stages:
   - pre

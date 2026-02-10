@@ -11,12 +11,12 @@ jobs:
     name: Build TLA Manager
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Install dependencies
         run: |
           sudo apt-get update && sudo apt-get install -y zip curl libicu-dev
       - name: Install .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.0.408'
       - name: Build using shell script

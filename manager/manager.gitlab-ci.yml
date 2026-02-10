@@ -13,7 +13,7 @@ build-manager:
   script:
     - echo "Installing dependencies..."
     - apt-get update && apt-get install -y zip curl libicu-dev
-    - curl -sSL https://dot.net/v1/dotnet-install.sh | bash -s -- --version 10.0 --install-dir /usr/bin/dotnet
+    - curl -sSL https://dot.net/v1/dotnet-install.sh | bash -s -- --version 10.0.102 --install-dir /usr/bin/dotnet
     - export PATH=$PATH:/usr/bin/dotnet
 
     - echo "Building application..."

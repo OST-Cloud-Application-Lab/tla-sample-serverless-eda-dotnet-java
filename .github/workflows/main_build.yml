@@ -66,6 +66,7 @@ jobs:
         working-directory: eventbridge
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          TLA_SAMPLE_APP_SERVERLESS_ORG: ${{ secrets.TLA_SAMPLE_APP_SERVERLESS_ORG }}
           SLS_AWS_SDK: 3
   deploy_manager:
     name: Deploy TLA Manager
@@ -89,11 +90,13 @@ jobs:
         working-directory: manager
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          TLA_SAMPLE_APP_SERVERLESS_ORG: ${{ secrets.TLA_SAMPLE_APP_SERVERLESS_ORG }}
           SLS_AWS_SDK: 3
       - run: serverless invoke --function seedDatabase --data 'unused'
         working-directory: manager
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          TLA_SAMPLE_APP_SERVERLESS_ORG: ${{ secrets.TLA_SAMPLE_APP_SERVERLESS_ORG }}
           SLS_AWS_SDK: 3
   deploy_resolver:
     name: Deploy TLA Resolver
@@ -117,9 +120,11 @@ jobs:
         working-directory: resolver
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          TLA_SAMPLE_APP_SERVERLESS_ORG: ${{ secrets.TLA_SAMPLE_APP_SERVERLESS_ORG }}
           SLS_AWS_SDK: 3
       - run: serverless invoke --function seedDatabase --data 'unused'
         working-directory: resolver
         env:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          TLA_SAMPLE_APP_SERVERLESS_ORG: ${{ secrets.TLA_SAMPLE_APP_SERVERLESS_ORG }}
           SLS_AWS_SDK: 3

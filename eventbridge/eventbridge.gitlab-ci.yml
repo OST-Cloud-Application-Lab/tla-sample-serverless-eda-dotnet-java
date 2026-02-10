@@ -12,6 +12,7 @@ deploy-eventbridge:
   environment: dev
   variables:
     SERVERLESS_ACCESS_KEY: $SERVERLESS_ACCESS_KEY
+    TLA_SAMPLE_APP_SERVERLESS_ORG: $TLA_SAMPLE_APP_SERVERLESS_ORG
   only:
     refs:
       - main
@@ -28,6 +29,7 @@ undeploy-eventbridge:
   environment: dev
   variables:
     SERVERLESS_ACCESS_KEY: $SERVERLESS_ACCESS_KEY
+    TLA_SAMPLE_APP_SERVERLESS_ORG: $TLA_SAMPLE_APP_SERVERLESS_ORG
   when: manual
   only:
     refs:
